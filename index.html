@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Performance Review Assessment — Dharani · AI Strategy &amp; Operations</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --ink:#1a1e2e; --ink2:#0a1a2f;
+    --accent:#049fd9; --accent2:#0380b0; --border:#dde1e8; --muted:#7a82a0; --muted2:#4a5270;
+    --green:#0d9668; --amber:#c47f08; --orange:#dc2626; --red:#bc2f2f; --blue:#0380b0; --purple:#7c3aed;
+    --serif:'Fraunces',Georgia,serif;
+    --sans:'Outfit',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono:'IBM Plex Mono',monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:880px;margin:0 auto;padding:40px 22px 90px}
+  h1,h2,h3{font-family:var(--serif);color:var(--ink2);font-weight:700;line-height:1.22}
+  h1{font-size:2.1rem;margin:.2em 0 .1em;letter-spacing:-.5px}
+  .sub{color:var(--muted2);font-size:.98rem;margin-top:0}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(4,159,217,.1);border:1px solid rgba(4,159,217,.25);padding:5px 14px;border-radius:100px;font-size:.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent2);margin-bottom:14px}
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+  .privacy{display:flex;gap:10px;align-items:center;background:#eef4f9;border:1px solid var(--border);border-radius:10px;padding:11px 15px;font-size:.86rem;color:var(--muted2);margin:18px 0 26px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:26px;margin-bottom:18px;box-shadow:0 1px 3px rgba(10,26,47,.03)}
+  .intro-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .field label{display:block;font-size:.82rem;font-weight:600;color:var(--muted2);margin-bottom:6px}
+  input[type=text],input[type=date],select,textarea{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:9px;background:#fff;font-family:var(--sans);font-size:.95rem;color:var(--ink)}
+  textarea{resize:vertical;min-height:64px;line-height:1.55}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);border-color:var(--accent)}
+  .sec-label{font-size:.72rem;text-transform:uppercase;letter-spacing:2px;color:var(--accent);font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .sec-label::before{content:'';width:16px;height:1px;background:var(--accent)}
+  .pillar-title{font-family:var(--serif);font-size:1.25rem;color:var(--ink2);margin:2px 0 2px}
+  .pillar-desc{font-size:.86rem;color:var(--muted);margin-bottom:6px}
+  .legend{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 8px;font-size:.74rem;color:var(--muted)}
+  .legend span{padding:3px 10px;border-radius:6px;border:1px solid var(--border);background:#fff}
+
+  .q{padding:20px 0;border-top:1px solid var(--border)}
+  .q:first-of-type{border-top:none}
+  .q .qt{font-size:1rem;font-weight:600;margin-bottom:10px;color:var(--ink2)}
+  .q .qt .num{color:var(--accent);font-family:var(--mono);margin-right:8px;font-weight:600}
+  .slider-row{display:flex;align-items:center;gap:16px}
+  input[type=range]{flex:1;accent-color:var(--accent);height:6px}
+  .rate-badge{flex:none;width:56px;height:56px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-weight:700;font-family:var(--mono);font-size:1.4rem;transition:background .2s}
+  .rate-badge small{font-size:.5rem;font-weight:700;font-family:var(--sans);opacity:.9;letter-spacing:.04em;margin-top:1px}
+  .anchor{display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-top:7px}
+
+  .btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+  button{font-family:var(--sans);font-size:.95rem;font-weight:600;border-radius:10px;padding:12px 22px;cursor:pointer;border:1px solid var(--border);transition:all .15s}
+  .btn-primary{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 2px 12px rgba(4,159,217,.22)}
+  .btn-primary:hover{background:var(--accent2)}
+  .btn-ghost{background:#fff;color:var(--ink)}
+  .btn-ghost:hover{border-color:var(--accent)}
+  .btn-ghost.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+  /* editable */
+  body.editing [data-edit]{outline:1px dashed rgba(4,159,217,.5);outline-offset:3px;border-radius:4px}
+  body.editing [data-edit]:focus{outline:2px solid var(--accent);background:#fff}
+
+  /* ---------- REPORT ---------- */
+  #report{display:none;margin-top:46px}
+  #report.show{display:block;animation:fade .6s ease both}
+  @keyframes fade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .rep-head{text-align:center;border-bottom:1px solid var(--border);padding-bottom:22px;margin-bottom:12px}
+  .rep-meta{color:var(--muted2);font-size:.9rem;margin:6px 0}
+  .disclaimer{font-style:italic;color:var(--muted);font-size:.82rem;margin-top:8px}
+  .hero{display:flex;gap:30px;align-items:center;flex-wrap:wrap;justify-content:center}
+  .gauge{position:relative;width:190px;height:190px;flex:none}
+  .gauge svg{transform:rotate(-90deg)}
+  .gauge .score-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .gauge .score-num b{font-family:var(--mono);font-size:2.7rem;line-height:1;color:var(--ink2)}
+  .gauge .score-num span{font-size:.78rem;color:var(--muted)}
+  .hero-text{flex:1;min-width:250px}
+  .pill{display:inline-block;padding:5px 14px;border-radius:999px;font-size:.82rem;font-weight:700;color:#fff}
+  .exec{margin-top:12px;font-size:.97rem;color:var(--muted2)}
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+  .kpi{border:1px solid var(--border);border-radius:11px;padding:14px;text-align:center;background:#fff}
+  .kpi b{display:block;font-family:var(--mono);font-size:1.5rem;color:var(--ink2)}
+  .kpi small{font-size:.72rem;color:var(--muted);line-height:1.3;display:block;margin-top:3px}
+
+  .pillars{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  .pcard{border:1px solid var(--border);border-radius:12px;padding:16px;background:#fff}
+  .pcard .ph{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .pcard .ph b{font-family:var(--serif);font-size:1.02rem;color:var(--ink2)}
+  .pcard .pscore{font-family:var(--mono);font-weight:700;font-size:1.2rem}
+  .pbar{height:8px;background:#e8ebf0;border-radius:6px;overflow:hidden}
+  .pbar i{display:block;height:100%;width:0;border-radius:6px;transition:width 1s ease}
+  .pcard p{font-size:.82rem;color:var(--muted);margin:8px 0 0}
+
+  .radar-wrap{display:flex;justify-content:center;padding:8px 0}
+  table{width:100%;border-collapse:collapse;font-size:.88rem;margin-top:6px}
+  th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+  th{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700}
+  .sev{display:inline-block;padding:2px 10px;border-radius:6px;font-size:.72rem;font-weight:700;color:#fff;white-space:nowrap}
+  ol.actions{padding-left:0;list-style:none;counter-reset:a;margin-top:4px}
+  ol.actions li{counter-increment:a;position:relative;padding:14px 16px 14px 52px;border:1px solid var(--border);border-radius:11px;margin-bottom:11px;background:#fff}
+  ol.actions li::before{content:counter(a);position:absolute;left:14px;top:14px;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-weight:700;font-size:.86rem;display:flex;align-items:center;justify-content:center;font-family:var(--mono)}
+  ol.actions .meta{font-size:.78rem;color:var(--muted);margin-top:5px}
+  .notecard{border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:11px;padding:14px 16px;background:#fff;margin-bottom:10px;font-size:.9rem;color:var(--muted2)}
+  .notecard b{color:var(--ink2);display:block;font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;color:var(--accent2)}
+  .rep-foot{margin-top:30px;padding-top:18px;border-top:1px solid var(--border);font-size:.8rem;color:var(--muted);text-align:center}
+
+  @media (max-width:640px){.intro-grid,.pillars{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr}h1{font-size:1.6rem}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+  @media print{body{background:#fff}.wrap{max-width:100%;padding:0}#form-section,.privacy,.btns,#print-hide{display:none!important}#report{display:block!important;margin:0}.card{box-shadow:none;border-color:#ddd;break-inside:avoid}ol.actions li,table tr,.pcard{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ FORM ============ -->
+  <section id="form-section">
+    <div class="eyebrow"><span class="dot"></span> CoSol · Leadership Review</div>
+    <h1 data-edit>Performance Review Assessment — Dharani</h1>
+    <p class="sub" data-edit>Rate performance against the AI Strategy &amp; Operations role — on a 1–10 scale per behaviour. Six competency pillars, drawn from the role playbook.</p>
+
+    <div class="privacy">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4a5270" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z"/></svg>
+      All scoring happens in your browser. Nothing is sent anywhere.
+    </div>
+
+    <div class="btns" style="margin:0 0 20px">
+      <button type="button" class="btn-ghost" id="editBtn">✎ Edit questions</button>
+    </div>
+
+    <form id="assessment">
+      <div class="card">
+        <div class="sec-label">Reviewer details</div>
+        <div class="intro-grid">
+          <div class="field"><label for="reviewer">Reviewer name</label><input type="text" id="reviewer" placeholder="Your name"></div>
+          <div class="field"><label for="rrole">Your role</label><input type="text" id="rrole" placeholder="e.g. CSO, PMO, Alliances"></div>
+          <div class="field"><label for="rel">Working relationship</label>
+            <select id="rel"><option value="">Select…</option><option>Manager</option><option>Peer</option><option>Cross-functional</option><option>Direct report</option></select></div>
+          <div class="field"><label for="freq">How often you worked together</label>
+            <select id="freq"><option value="">Select…</option><option>Daily</option><option>Weekly</option><option>Occasionally</option></select></div>
+          <div class="field"><label for="period">Review period</label><input type="text" id="period" placeholder="e.g. Q1 FY26-27 · 14 weeks"></div>
+          <div class="field"><label for="date">Assessment date</label><input type="date" id="date"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="sec-label">Rating scale</div>
+        <div class="legend">
+          <span>1–2 Needs work</span><span>3–4 Developing</span><span>5–6 Solid</span><span>7–8 Strong</span><span>9–10 Exceptional</span>
+        </div>
+        <div id="pillars"></div>
+      </div>
+
+      <div class="card">
+        <div class="sec-label">In your words</div>
+        <div class="field" style="margin-bottom:14px"><label for="keep" data-edit>One thing she should keep doing</label><textarea id="keep" placeholder="What's working — be specific."></textarea></div>
+        <div class="field" style="margin-bottom:14px"><label for="gap" data-edit>One gap to close</label><textarea id="gap" placeholder="Where she has the most room to grow."></textarea></div>
+        <div class="field"><label for="evolve" data-edit>How should this role evolve next quarter?</label><textarea id="evolve" placeholder="Scope, ownership, or focus you'd like to see."></textarea></div>
+      </div>
+
+      <div class="btns">
+        <button type="submit" class="btn-primary">Generate Assessment Report</button>
+        <button type="button" class="btn-ghost" id="resetBtn">Reset</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- ============ REPORT ============ -->
+  <section id="report" aria-live="polite"></section>
+
+  <div class="btns" id="print-hide" style="display:none">
+    <button type="button" class="btn-primary" id="printBtn">Print / Save as PDF</button>
+    <button type="button" class="btn-ghost" id="downloadBtn">Download report (HTML)</button>
+    <button type="button" class="btn-ghost" id="editAnsBtn">Edit answers</button>
+  </div>
+
+</div>
+
+<script>
+/* ===================== PILLARS & DIMENSIONS (weights sum to 100) ===================== */
+const PILLARS={
+  exec:{label:'Execution & Cadence', color:'var(--accent)', desc:'Runs the operating rhythm and closes what she starts.'},
+  ai:{label:'AI Leverage', color:'var(--purple)', desc:'Uses AI as a force multiplier to work faster and at higher quality.'},
+  strat:{label:'Strategic Ownership', color:'var(--green)', desc:'Owns OKRs, sequencing, and thinks in outcomes.'},
+  comm:{label:'Communication & Reporting', color:'var(--blue)', desc:'Decision-ready briefs; a recommendation, not a question.'},
+  collab:{label:'Collaboration & Influence', color:'var(--amber)', desc:'Trust across functions; unblocks others.'},
+  judge:{label:'Judgement & Growth', color:'var(--red)', desc:'Sound calls under ambiguity; takes feedback well.'}
+};
+const DIMS=[
+  {id:'e1',pillar:'exec',weight:6,q:'Runs the weekly operating cadence reliably — meetings are prepped, decisions get made.'},
+  {id:'e2',pillar:'exec',weight:5,q:'Resolves blockers fast — stuck items get escalated and moved, not left to drift.'},
+  {id:'e3',pillar:'exec',weight:6,q:'Follows through — closes what she starts; low rate of dropped or omitted work.'},
+
+  {id:'a1',pillar:'ai',weight:6,q:'Uses AI as a force multiplier — leans on it for repeatable work rather than doing it all by hand.'},
+  {id:'a2',pillar:'ai',weight:6,q:'Turns AI use into real leverage — faster, higher-quality output the team can feel.'},
+  {id:'a3',pillar:'ai',weight:4,q:'Shares her AI approach — prompts and methods others can reuse.'},
+
+  {id:'s1',pillar:'strat',weight:6,q:'Owns OKRs and roadmap governance — tracks, scores, and course-corrects.'},
+  {id:'s2',pillar:'strat',weight:6,q:'Makes sound sequencing and trade-off calls across both orgs.'},
+  {id:'s3',pillar:'strat',weight:5,q:'Thinks in outcomes, not activities — frames work by what changes.'},
+
+  {id:'c1',pillar:'comm',weight:6,q:'Executive briefs are clear and decision-ready — signal, not data dump.'},
+  {id:'c2',pillar:'comm',weight:5,q:'Brings a recommendation, not just a question, when escalating.'},
+  {id:'c3',pillar:'comm',weight:5,q:'Keeps leadership current — no stale data, no surprises.'},
+
+  {id:'l1',pillar:'collab',weight:6,q:'Builds trust across functions — people want her in the room.'},
+  {id:'l2',pillar:'collab',weight:5,q:'Shows up well in meetings — prepared, constructive, additive.'},
+  {id:'l3',pillar:'collab',weight:5,q:'Actively unblocks others rather than only her own workstream.'},
+
+  {id:'j1',pillar:'judge',weight:6,q:'Makes good decisions under ambiguity and incomplete information.'},
+  {id:'j2',pillar:'judge',weight:6,q:'Takes feedback well and adjusts — coachable and self-aware.'},
+  {id:'j3',pillar:'judge',weight:6,q:'Judgement is reliable — you can hand her a call and trust the outcome.'}
+];
+const FIXES={
+  e1:'Lock the weekly cadence with a standing agenda template and a pre-read owner for each session.',
+  e2:'Set a hard 48-hour blocker SLA with auto-escalation so nothing drifts silently.',
+  e3:'Add a weekly close-out ritual — every open item gets a status, an owner, or a deliberate drop.',
+  a1:'Take the two highest-toil manual tasks and run them AI-first this month to reclaim the hours.',
+  a2:'Track and share the time AI-first working saves, so the leverage is visible, not anecdotal.',
+  a3:'Package one reusable prompt or method per month for the team to pick up.',
+  s1:'Move OKR scoring to a fixed weekly rhythm and flag at-risk KRs before review, not at it.',
+  s2:'Bring trade-offs as modelled scenarios with a recommendation attached, not open questions.',
+  s3:'Reframe status updates around outcome deltas rather than task counts.',
+  c1:'Standardise the Friday brief to wins / risks / decisions-needed — three sections, one page.',
+  c2:'Never escalate without a proposed resolution and a default recommendation.',
+  c3:'Automate data pulls so reporting is always live; no manual compilation before syncs.',
+  l1:'Invest in a light 1:1 cadence with key cross-functional partners to deepen trust.',
+  l2:'Pre-share the ask and desired decision before each meeting so time is spent deciding.',
+  l3:'Take ownership of one recurring cross-team blocker end-to-end as a visible proof point.',
+  j1:'Document decision rationale on ambiguous calls to build a track record and speed future ones.',
+  j2:'Close the loop on feedback visibly — state what changed after each review.',
+  j3:'Ask for a stretch decision to own solo this quarter to demonstrate expanded judgement.'
+};
+
+const MATURITY=r=> r<=2?'NEEDS WORK':r<=4?'DEVELOPING':r<=6?'SOLID':r<=8?'STRONG':'EXCEPTIONAL';
+const rateColor=r=> r<=2?'#bc2f2f':r<=4?'#c47f08':r<=6?'#049fd9':r<=8?'#0380b0':'#0d9668';
+
+/* ===================== BUILD FORM ===================== */
+const pWrap=document.getElementById('pillars');
+let qi=0;
+Object.keys(PILLARS).forEach(pk=>{
+  const p=PILLARS[pk];
+  let html=`<div class="q" style="border-top:${qi===0?'none':'1px solid var(--border)'}">
+     <div class="sec-label" data-edit>${p.label}</div>
+     <div class="pillar-desc" data-edit>${p.desc}</div></div>`;
+  pWrap.insertAdjacentHTML('beforeend',html);
+  DIMS.filter(d=>d.pillar===pk).forEach(d=>{
+    qi++;
+    pWrap.insertAdjacentHTML('beforeend',`
+      <div class="q" data-id="${d.id}">
+        <div class="qt"><span class="num">${qi}.</span><span data-edit>${d.q}</span></div>
+        <div class="slider-row">
+          <input type="range" min="1" max="10" value="5" name="${d.id}" aria-label="${d.id}">
+          <div class="rate-badge" style="background:${rateColor(5)}"><span>5</span><small>SOLID</small></div>
+        </div>
+        <div class="anchor"><span>1 · Needs work</span><span>10 · Exceptional</span></div>
+      </div>`);
+  });
+});
+
+/* live slider badge */
+document.addEventListener('input',e=>{
+  if(e.target.type==='range'){
+    const v=+e.target.value, b=e.target.closest('.slider-row').querySelector('.rate-badge');
+    b.style.background=rateColor(v);
+    b.querySelector('span').textContent=v;
+    b.querySelector('small').textContent=MATURITY(v);
+  }
+});
+document.getElementById('date').valueAsDate=new Date();
+
+/* edit questions toggle */
+const editBtn=document.getElementById('editBtn');let editing=false;
+function setEditing(on){editing=on;document.body.classList.toggle('editing',on);
+  document.querySelectorAll('[data-edit]').forEach(el=>el.setAttribute('contenteditable',on?'true':'false'));
+  editBtn.classList.toggle('on',on);editBtn.textContent=on?'✓ Done editing':'✎ Edit questions';}
+editBtn.addEventListener('click',()=>setEditing(!editing));
+
+/* ===================== HELPERS ===================== */
+const rate=id=>+document.querySelector(`input[name="${id}"]`).value;
+const val=id=>{const el=document.getElementById(id);return el?(el.value||'').trim():'';};
+const esc=s=>(s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+/* ===================== SCORING ===================== */
+function compute(){
+  const ratings={};DIMS.forEach(d=>ratings[d.id]=rate(d.id));
+  let score=0;
+  DIMS.forEach(d=>{score+=((ratings[d.id]-1)/9)*d.weight;});
+  score=Math.round(score);
+
+  const pillarScores={};
+  Object.keys(PILLARS).forEach(pk=>{
+    const items=DIMS.filter(d=>d.pillar===pk);
+    const avg=items.reduce((s,d)=>s+((ratings[d.id]-1)/9),0)/items.length;
+    pillarScores[pk]=Math.round(avg*100);
+  });
+
+  let band,color;
+  if(score>=85){band='Exceptional';color='var(--green)';}
+  else if(score>=70){band='Strong';color='var(--blue)';}
+  else if(score>=55){band='Meets expectations';color='var(--amber)';}
+  else{band='Developing';color='var(--orange)';}
+
+  return {ratings,score,pillarScores,band,color};
+}
+
+/* ===================== RADAR ===================== */
+function radar(pillarScores){
+  const keys=Object.keys(PILLARS), n=keys.length, cx=150, cy=140, R=105;
+  const ang=i=>(-90 + i*360/n)*Math.PI/180;
+  let rings='';
+  [0.25,0.5,0.75,1].forEach(f=>{
+    let pts=keys.map((_,i)=>`${cx+Math.cos(ang(i))*R*f},${cy+Math.sin(ang(i))*R*f}`).join(' ');
+    rings+=`<polygon points="${pts}" fill="none" stroke="#dde1e8" stroke-width="1"/>`;
+  });
+  let axes='',labels='';
+  keys.forEach((k,i)=>{
+    const x=cx+Math.cos(ang(i))*R, y=cy+Math.sin(ang(i))*R;
+    axes+=`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#dde1e8" stroke-width="1"/>`;
+    const lx=cx+Math.cos(ang(i))*(R+20), ly=cy+Math.sin(ang(i))*(R+16);
+    const anchor=Math.abs(Math.cos(ang(i)))<0.3?'middle':(Math.cos(ang(i))>0?'start':'end');
+    labels+=`<text x="${lx}" y="${ly}" font-size="9" font-family="Outfit" fill="#4a5270" text-anchor="${anchor}">${PILLARS[k].label.split(' ')[0]}</text>`;
+  });
+  const dpts=keys.map((k,i)=>{const f=pillarScores[k]/100;return `${cx+Math.cos(ang(i))*R*f},${cy+Math.sin(ang(i))*R*f}`;}).join(' ');
+  return `<svg width="300" height="285" viewBox="0 0 300 285">${rings}${axes}
+    <polygon points="${dpts}" fill="rgba(4,159,217,.18)" stroke="var(--accent)" stroke-width="2"/>
+    ${keys.map((k,i)=>{const f=pillarScores[k]/100;return `<circle cx="${cx+Math.cos(ang(i))*R*f}" cy="${cy+Math.sin(ang(i))*R*f}" r="3" fill="var(--accent)"/>`;}).join('')}
+    ${labels}</svg>`;
+}
+
+/* ===================== RENDER REPORT ===================== */
+function render(){
+  const {ratings,score,pillarScores,band,color}=compute();
+  const circ=2*Math.PI*80, off=circ*(1-score/100);
+
+  // strengths (top 3 dims) and focus (bottom 3 dims)
+  const ranked=[...DIMS].sort((a,b)=>ratings[b.id]-ratings[a.id]);
+  const strengths=ranked.slice(0,3);
+  const focus=[...DIMS].sort((a,b)=>ratings[a.id]-ratings[b.id]).slice(0,3);
+  const sevOf=r=>r>=8?['Low','var(--green)']:r>=6?['Watch','var(--blue)']:r>=4?['Medium','var(--amber)']:['High','var(--orange)'];
+
+  const meta=[val('reviewer'),val('rrole')].filter(Boolean).join(' · ');
+  const rel=[val('rel'),val('freq')].filter(Boolean).join(' · ');
+  const period=val('period')||'Current review period';
+  const dt=val('date');
+
+  const pillarCards=Object.keys(PILLARS).map(pk=>{
+    const s=pillarScores[pk];
+    return `<div class="pcard"><div class="ph"><b>${PILLARS[pk].label}</b><span class="pscore" style="color:${PILLARS[pk].color}">${s}</span></div>
+      <div class="pbar"><i data-w="${s}" style="background:${PILLARS[pk].color}"></i></div>
+      <p>${PILLARS[pk].desc}</p></div>`;
+  }).join('');
+
+  const strengthRows=strengths.map(d=>{
+    const [sv,sc]=sevOf(ratings[d.id]);
+    return `<tr><td>${PILLARS[d.pillar].label}</td><td>${esc(d.q)}</td><td style="font-family:var(--mono);font-weight:700">${ratings[d.id]}/10</td></tr>`;
+  }).join('');
+
+  const focusList=focus.map(d=>{
+    const [sv,sc]=sevOf(ratings[d.id]);
+    return `<li><b>${esc(d.q)}</b> <span class="sev" style="background:${sc}">${sv} · ${ratings[d.id]}/10</span>
+      <div class="meta">${FIXES[d.id]}</div></li>`;
+  }).join('');
+
+  const notes=[
+    ['Keep doing', val('keep')],
+    ['Gap to close', val('gap')],
+    ['How the role should evolve', val('evolve')]
+  ].filter(n=>n[1]).map(n=>`<div class="notecard"><b>${n[0]}</b>${esc(n[1])}</div>`).join('');
+
+  const exec=`Overall score of <b>${score}/100</b> — ${band.toLowerCase()}. Strongest pillar: <b>${PILLARS[Object.keys(pillarScores).reduce((a,b)=>pillarScores[a]>=pillarScores[b]?a:b)].label}</b>. Biggest opportunity: <b>${PILLARS[Object.keys(pillarScores).reduce((a,b)=>pillarScores[a]<=pillarScores[b]?a:b)].label}</b>.`;
+
+  document.getElementById('report').innerHTML=`
+    <div class="rep-head">
+      <div class="eyebrow" style="justify-content:center"><span class="dot"></span> Performance Assessment · Report</div>
+      <h1>Dharani — AI Strategy &amp; Operations</h1>
+      <div class="rep-meta">${period}${dt?' · '+dt:''}</div>
+      ${meta?`<div class="rep-meta">Reviewer: ${esc(meta)}${rel?' — '+esc(rel):''}</div>`:''}
+      <div class="disclaimer">One reviewer's assessment. Combine with peer and self-review before conclusions.</div>
+    </div>
+
+    <div class="card">
+      <div class="hero">
+        <div class="gauge">
+          <svg width="190" height="190" viewBox="0 0 190 190">
+            <circle cx="95" cy="95" r="80" fill="none" stroke="#e8ebf0" stroke-width="14"/>
+            <circle cx="95" cy="95" r="80" fill="none" stroke="${color}" stroke-width="14" stroke-linecap="round"
+              stroke-dasharray="${circ}" stroke-dashoffset="${circ}" id="gaugeArc"/>
+          </svg>
+          <div class="score-num"><b>${score}</b><span>/ 100</span></div>
+        </div>
+        <div class="hero-text">
+          <span class="pill" style="background:${color}">${band}</span>
+          <p class="exec">${exec}</p>
+          <div class="kpis">
+            <div class="kpi"><b>${Math.round(DIMS.reduce((s,d)=>s+ratings[d.id],0)/DIMS.length*10)/10}</b><small>Avg rating (of 10)</small></div>
+            <div class="kpi"><b>${strengths.length}</b><small>Top strengths</small></div>
+            <div class="kpi"><b>${focus.length}</b><small>Focus areas</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sec-label">Pillar breakdown</div>
+      <div class="pillars">${pillarCards}</div>
+      <div class="radar-wrap">${radar(pillarScores)}</div>
+    </div>
+
+    <div class="card">
+      <div class="sec-label">Top strengths</div>
+      <table><thead><tr><th>Pillar</th><th>Behaviour</th><th>Rating</th></tr></thead><tbody>${strengthRows}</tbody></table>
+    </div>
+
+    <div class="card">
+      <div class="sec-label">Recommended focus</div>
+      <ol class="actions">${focusList}</ol>
+    </div>
+
+    ${notes?`<div class="card"><div class="sec-label">Reviewer notes</div>${notes}</div>`:''}
+
+    <div class="rep-foot">Performance Review Assessment · Dharani — AI Strategy &amp; Operations · CoSol + Purposive · Confidential</div>
+  `;
+  document.getElementById('report').classList.add('show');
+  document.getElementById('print-hide').style.display='flex';
+  requestAnimationFrame(()=>{
+    const arc=document.getElementById('gaugeArc');
+    if(arc){arc.style.transition='stroke-dashoffset 1.1s cubic-bezier(.4,0,.2,1)';arc.style.strokeDashoffset=off;}
+    document.querySelectorAll('.pbar i').forEach(b=>b.style.width=b.getAttribute('data-w')+'%');
+  });
+}
+
+/* ===================== EVENTS ===================== */
+document.getElementById('assessment').addEventListener('submit',e=>{
+  e.preventDefault();if(editing)setEditing(false);render();
+  document.getElementById('report').scrollIntoView({behavior:'smooth'});
+});
+document.getElementById('resetBtn').addEventListener('click',()=>{
+  document.querySelectorAll('input[type=range]').forEach(r=>{r.value=5;r.dispatchEvent(new Event('input',{bubbles:true}));});
+  ['reviewer','rrole','period','keep','gap','evolve'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('rel').value='';document.getElementById('freq').value='';
+  document.getElementById('report').classList.remove('show');
+  document.getElementById('print-hide').style.display='none';
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+document.getElementById('editAnsBtn').addEventListener('click',()=>{
+  document.getElementById('report').classList.remove('show');
+  document.getElementById('print-hide').style.display='none';
+  document.getElementById('form-section').scrollIntoView({behavior:'smooth'});
+});
+document.getElementById('printBtn').addEventListener('click',()=>window.print());
+document.getElementById('downloadBtn').addEventListener('click',()=>{
+  const rep=document.getElementById('report').innerHTML;
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Performance Assessment Report — Dharani</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <style>${document.querySelector('style').innerHTML}</style></head>
+  <body><div class="wrap"><section id="report" class="show">${rep}</section></div></body></html>`;
+  const blob=new Blob([html],{type:'text/html'});const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download='Performance_Assessment_Report_Dharani.html';a.click();URL.revokeObjectURL(a.href);
+});
+</script>
+</body>
+</html>
